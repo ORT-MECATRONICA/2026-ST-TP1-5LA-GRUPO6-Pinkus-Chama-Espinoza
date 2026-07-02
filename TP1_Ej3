@@ -1,29 +1,39 @@
 // Pinkus, Chama, Espinoza, G6
 
-#define LED_RELE 2
+#include <DHT.h>
 
+#define DATA_DHT 23
+#define DHTTYPE DHT11
+#define LED_RELE 2
+#define UMBRAL 28
+
+DHT dht(DATA_DHT, DHTTYPE);
 float temperatura = 0;
-unsigned long tiempoAnterior = 0;
 
 void setup() {
   Serial.begin(115200);
+  dht.begin();
   pinMode(LED_RELE, OUTPUT);
 }
 
 void loop() {
+  temperatura = dht.readTemperature();
 
-   if (millis() - tiempoAnterior >= 2000) {
-    tiempoAnterior = millis();
-    temperatura = random(20,35);
-    Serial.print("Temperatura: ");
-    Serial.println(temperatura);
-
-    if (temperatura > 28) {
-      digitalWrite(LED_RELE, HIGH);
-      Serial.println("RELE/LED ENCENDIDO");
-    } else {
-      digitalWrite(LED_RELE, LOW);
-      Serial.println("RELE/LED APAGADO");
-    }
+  if (isnan(temperatura)) {
+    Serial.println("Error al leer el sensor");
+    return;
   }
+
+  Serial.print("Temperatura: ");
+  Serial.print(temperatura);
+  Serial.println(" °C");
+
+  if (temperatura >= UMBRAL) {
+    digitalWrite(LED_RELE, HIGH);
+    Serial.println("RELE/LED ENCENDIDO");
+  } else {
+    digitalWrite(LED_RELE, LOW);
+    Serial.println("RELE/LED APAGADO");
+  }
+  delay(2000);
 }
