@@ -1,0 +1,29 @@
+// Pinkus, Chama, Espinoza, G6
+
+#define LED_RELE 2
+
+float temperatura = 0;
+unsigned long tiempoAnterior = 0;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(LED_RELE, OUTPUT);
+}
+
+void loop() {
+
+   if (millis() - tiempoAnterior >= 2000) {
+    tiempoAnterior = millis();
+    temperatura = random(20,35);
+    Serial.print("Temperatura: ");
+    Serial.println(temperatura);
+
+    if (temperatura > 28) {
+      digitalWrite(LED_RELE, HIGH);
+      Serial.println("RELE/LED ENCENDIDO");
+    } else {
+      digitalWrite(LED_RELE, LOW);
+      Serial.println("RELE/LED APAGADO");
+    }
+  }
+}
