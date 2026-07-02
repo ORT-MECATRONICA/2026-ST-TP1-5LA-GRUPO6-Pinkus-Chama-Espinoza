@@ -1,0 +1,21 @@
+// Pinkus, Chama, Espinoza, G6
+
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SH110X.h>
+
+Adafruit_SH1106G display = Adafruit_SH1106G(128, 64, &Wire);
+
+void setup() {
+  display.begin(0x3C, true);
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setTextColor(SH110X_WHITE);
+  display.setCursor(0,20);
+
+  display.println("hola mundo");
+  display.display();
+}
+
+void loop() {
+}
