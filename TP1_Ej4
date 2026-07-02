@@ -1,0 +1,75 @@
+// Pinkus, Chama, Espinoza, G6
+
+
+#define SW1 18
+#define SW2 19
+#define LED 2
+
+float temperatura = 25;
+int umbral = 28;
+unsigned long tiempoAnterior = 0;
+
+enum estados {
+  P1,
+  P2
+};
+
+estados estado = P1;
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(SW1, INPUT_PULLUP);
+  pinMode(SW2, INPUT_PULLUP);
+  pinMode(LED, OUTPUT);
+}
+
+void loop() {
+
+  if (millis() - tiempoAnterior >= 2000) {
+    tiempoAnterior = millis();
+    temperatura = random(20,35);
+
+    if (temperatura > umbral) {
+      digitalWrite(LED, HIGH);
+    }
+    else {
+      digitalWrite(LED, LOW);
+    }
+  }
+
+  switch(estado) {
+
+    case P1:
+      Serial.print("VA: ");
+      Serial.print(temperatura);
+      Serial.print("  VU: ");
+      Serial.println(umbral);
+
+      if (digitalRead(SW1) == LOW && digitalRead(SW2) == LOW) {
+        delay(300);
+        estado = P2;
+      }
+    break;
+
+    case P2:
+      Serial.print("VU: ");
+      Serial.println(umbral);
+
+      if (digitalRead(SW1) == LOW) {
+        umbral++;
+        delay(200);
+      }
+
+      if (digitalRead(SW2) == LOW) {
+        umbral--;
+        delay(200);
+      }
+
+      if (digitalRead(SW1) == LOW && digitalRead(SW2) == LOW) {
+        delay(300);
+        estado = P1;
+      }
+    break;
+  }
+}
